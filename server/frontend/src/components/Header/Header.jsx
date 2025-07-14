@@ -4,24 +4,23 @@ import "../assets/bootstrap.min.css";
 
 const Header = () => {
     const logout = async (e) => {
-    e.preventDefault();
-    let logout_url = window.location.origin+"/djangoapp/logout";
-    const res = await fetch(logout_url, {
-      method: "GET",
-    });
-  
-    const json = await res.json();
-    if (json) {
-      let username = sessionStorage.getItem('username');
-      sessionStorage.removeItem('username');
-      window.location.href = window.location.origin;
-      window.location.reload();
-      alert("Logging out "+username+"...")
-    }
-    else {
-      alert("The user could not be logged out.")
-    }
-  };
+        e.preventDefault();
+        const res = await fetch("/djangoapp/logout", {
+          method: "GET",
+          credentials: "include", // CRITICAL for session cookie
+        });
+      
+        const json = await res.json();
+        if (json && json.status === true) {
+          const username = sessionStorage.getItem("username");
+          sessionStorage.removeItem("username");
+          alert("Logging out " + username + "...");
+          window.location.href = "/";
+        } else {
+          alert("Logout failed");
+        }
+      };
+      
     
 //The default home page items are the login details panel
 let home_page_items =  <div></div>
@@ -30,12 +29,21 @@ let home_page_items =  <div></div>
 let curr_user = sessionStorage.getItem('username')
 
 //If the user is logged in, show the username and logout option on home page
-if ( curr_user !== null &&  curr_user !== "") {
-    home_page_items = <div className="input_panel">
-      <text className='username'>{sessionStorage.getItem("username")}</text>
-    <a className="nav_item" href="/djangoapp/logout" onClick={logout}>Logout</a>
-  </div>
-}
+if (curr_user !== null && curr_user !== "") {
+    home_page_items = (
+        <div className="input_panel">
+          <span className='username'>{curr_user}</span>
+          <button
+            className="nav_item btn btn-link"
+            onClick={logout}
+            style={{ textDecoration: "underline", color: "black", background: "none", border: "none" }}
+          >
+            Logout
+          </button>
+        </div>
+      );
+      
+  }  
     return (
         <div>
           <nav class="navbar navbar-expand-lg navbar-light" style={{backgroundColor:"darkturquoise",height:"1in"}}>
