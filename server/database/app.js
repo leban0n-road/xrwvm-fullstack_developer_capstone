@@ -27,8 +27,12 @@ try {
   });
   
 } catch (error) {
-  res.status(500).json({ error: 'Error fetching documents' });
-}
+    console.error('Error inserting initial data:', error);
+  }
+// Health check route
+app.get('/health', (req, res) => {
+    res.send('OK');
+  });  
 
 
 // Express route to home
@@ -58,19 +62,42 @@ app.get('/fetchReviews/dealer/:id', async (req, res) => {
 
 // Express route to fetch all dealerships
 app.get('/fetchDealers', async (req, res) => {
-//Write your code here
-});
+    try {
+      const dealers = await Dealerships.find({});
+      res.json(dealers);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  });
+  
 
 // Express route to fetch Dealers by a particular state
 app.get('/fetchDealers/:state', async (req, res) => {
-//Write your code here
-});
+    try {
+      const dealers = await Dealerships.find({ state: req.params.state });
+      res.json(dealers);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  });
+  
 
-// Express route to fetch dealer by a particular id
+// Fetch dealer by ID
 app.get('/fetchDealer/:id', async (req, res) => {
-//Write your code here
-});
-
+    try {
+      const dealer = await Dealerships.findOne({ id: parseInt(req.params.id) });
+      if (dealer) {
+        res.json(dealer);
+      } else {
+        res.status(404).send('Dealer not found');
+      }
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  });
+  
+  
+  
 //Express route to insert review
 app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
   data = JSON.parse(req.body);
@@ -99,6 +126,8 @@ app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
 });
 
 // Start the Express server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${port}`);
+  });
+  
+  
