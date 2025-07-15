@@ -30,11 +30,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    'django-app-sn-labs-mark12345643.us-east.containers.appdomain.cloud'
+    '127.0.0.1',
+    'mark12345643-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://django-app-sn-labs-mark12345643.us-east.containers.appdomain.cloud'
+    'https://mark12345643-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
 ]
 
 

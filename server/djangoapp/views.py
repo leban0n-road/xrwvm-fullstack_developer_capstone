@@ -13,6 +13,8 @@ from django.contrib.auth import authenticate, login, logout
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
+from .models import CarMake, CarModel
+from .populate import initiate  # If you use auto-population
 # from .populate import initiate
 
 
@@ -63,6 +65,12 @@ def register_user(request):
         login(request, user)
         return JsonResponse({"userName": username, "status": True})
 
+def get_cars(request):
+    if CarMake.objects.count() == 0:
+        initiate()
+    car_models = CarModel.objects.select_related('car_make')
+    cars = [{"CarModel": model.name, "CarMake": model.car_make.name} for model in car_models]
+    return JsonResponse({"CarModels": cars})
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
